@@ -5,7 +5,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
-const Dishes = require('./models/dishes');
 const dishRouter = require('./routes/dishRouter');
 const promoRouter = require('./routes/promoRouter');
 const leaderRouter = require('./routes/leaderRouter');
@@ -13,8 +12,8 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const app = express();
-const url = 'mongodb://localhost:27017/conFusion';
-const connect = mongoose.connect(url);
+const url = 'mongodb://localhost:27017/conFusion';//mongo server url
+const connect = mongoose.connect(url); //connecting to mongo server with mongose
 
 connect.then((db) => {
     console.log("Connected correctly to server");
