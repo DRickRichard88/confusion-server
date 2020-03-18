@@ -49,7 +49,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
-function auth(req, res, next) {
+const auth = (req, res, next) => {
   console.log(req.session);
 
   if (!req.session.user) {
