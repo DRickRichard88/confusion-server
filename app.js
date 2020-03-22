@@ -15,8 +15,10 @@ const promoRouter = require("./routes/promoRouter");
 const leaderRouter = require("./routes/leaderRouter");
 const usersRouter = require("./routes/users");
 
+const config = require('./config');
+
 const app = express();
-const url = "mongodb://localhost:27017/conFusion"; //mongo server url
+const url = config.mongoUrl; //mongo server url from config.js
 const connect = mongoose.connect(url); //connecting to mongo server with mongose
 
 connect.then(
@@ -35,39 +37,14 @@ app.set("view engine", "jade");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-//app.use(cookieParser("12345-67890-09876-54321"));
-app.use(
-  session({
-    name: "session-id",
-    secret: "12345-67890-09876-54321",
-    saveUninitialized: false,
-    resave: false,
-    store: new FileStore()
-  })
-);
-
-app.use(express.static(path.join(__dirname, "public")));
 
 app.use(passport.initialize());
-app.use(passport.session());
 
 // need to be before auth
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
-const auth = (req, res, next) => {
-  console.log(req.user);
-
-  if (!req.user) {
-    const err = new Error("You are not authenticated!");
-    err.status = 403;
-    next(err);
-  } else {
-    next();
-  }
-};
-
-app.use(auth);
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/dishes", dishRouter);
 app.use("/promotions", promoRouter);
