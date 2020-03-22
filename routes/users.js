@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const User = require("../models/users");
 const passport = require("passport");
 const router = express.Router();
-const authenticate = require('../authenticate');
+const authenticate = require("../authenticate");
 router.use(bodyParser.json());
 
 /* GET users listing. */
@@ -19,8 +19,23 @@ router.post("/signup", (req, res, next) => {
       if (err) {
         res.statusCode = 500;
         res.setHeader("Content-Type", "application/json");
-        res.json({ err: err });
+        res.json({ err });
       } else {
+        if (req.body.firstname) user.firstname = req.body.firstname;
+        if (req.body.lastname) user.lastname = req.body.lastname;
+        user.save((err, user) => {
+          if (err) {
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.json({ err });
+            return;
+          }
+          passport.authenticate("local")(req, res, () => {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json({ success: true, status: "Registration Successful!" });
+          });
+        });
         passport.authenticate("local")(req, res, () => {
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
@@ -31,12 +46,15 @@ router.post("/signup", (req, res, next) => {
   );
 });
 //login with json web token
-router.post('/login', passport.authenticate('local'), (req, res) => {
-
-  const token = authenticate.getToken({_id: req.user._id});
+router.post("/login", passport.authenticate("local"), (req, res) => {
+  const token = authenticate.getToken({ _id: req.user._id });
   res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  res.json({success: true, token: token, status: 'You are successfully logged in!'});
+  res.setHeader("Content-Type", "application/json");
+  res.json({
+    success: true,
+    token: token,
+    status: "You are successfully logged in!"
+  });
 });
 
 router.get("/logout", (req, res, next) => {
