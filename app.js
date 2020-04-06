@@ -14,7 +14,8 @@ const dishRouter = require("./routes/dishRouter");
 const promoRouter = require("./routes/promoRouter");
 const leaderRouter = require("./routes/leaderRouter");
 const usersRouter = require("./routes/users");
-const commentRouter = require("./routes/commentRouter")
+const commentRouter = require("./routes/commentRouter");
+const uploadRouter = require('./routes/uploadRouter');
 const config = require('./config');
 
 const app = express();
@@ -50,6 +51,7 @@ app.use("/dishes", dishRouter);
 app.use("/promotions", promoRouter);
 app.use("/leaders", leaderRouter);
 app.use('/comments',commentRouter);
+app.use('/imageUpload',uploadRouter);
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
